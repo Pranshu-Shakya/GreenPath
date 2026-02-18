@@ -1,166 +1,187 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
-    MapContainer,
-    TileLayer,
-    Polyline,
-    Marker,
-    Popup,
-    useMap
+  MapContainer,
+  TileLayer,
+  Polyline,
+  Marker,
+  Popup,
+  useMap,
+  useMapEvents
 } from "react-leaflet";
-
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
-// Fix marker icons
+/* ===========================
+   Fix Leaflet Marker Icons
+=========================== */
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-    iconRetinaUrl:
-        "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-    iconUrl:
-        "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-    shadowUrl:
-        "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+  iconUrl:
+    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+  shadowUrl:
+    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
 });
 
-// Auto-fit map to routes
+/* ===========================
+   Fit Bounds to Routes
+=========================== */
 function FitBounds({ routes }) {
+  const map = useMap();
 
-    const map = useMap();
+  useEffect(() => {
+    if (!routes.length) return;
 
-    useEffect(() => {
+    const bounds = [];
+    routes.forEach(route => {
+      route.geometry.coordinates.forEach(coord => {
+        bounds.push([coord[1], coord[0]]);
+      });
+    });
 
-        if (!routes.length) return;
+    map.fitBounds(bounds, { padding: [50, 50] });
+  }, [routes, map]);
 
-        const bounds = [];
-
-        routes.forEach(route => {
-            route.geometry.coordinates.forEach(coord => {
-                bounds.push([coord[1], coord[0]]);
-            });
-        });
-
-        map.fitBounds(bounds, { padding: [50, 50] });
-
-    }, [routes]);
-
-    return null;
+  return null;
 }
 
+/* ===========================
+   Handle Map Clicks
+=========================== */
+function MapClickHandler({ setStart, setEnd }) {
+  useMapEvents({
+    click(e) {
+      const { lat, lng } = e.latlng;
+
+      setStart(prev => {
+        if (!prev) return [lat, lng];
+        setEnd([lat, lng]);
+        return prev;
+      });
+    }
+  });
+
+  return null;
+}
+
+/* ===========================
+   Main Component
+=========================== */
 function MapComponent() {
+  const [routes, setRoutes] = useState([]);
+  const [start, setStart] = useState(null);
+  const [end, setEnd] = useState(null);
 
-    const [routes, setRoutes] = useState([]);
-    const [start, setStart] = useState("");
-    const [end, setEnd] = useState("");
+  const getRoute = async () => {
+    if (!start || !end) {
+      alert("Select start and end points on the map");
+      return;
+    }
 
-    const getRoute = async () => {
+    const startStr = `${start[1]},${start[0]}`;
+    const endStr = `${end[1]},${end[0]}`;
 
-        if (!start || !end) {
-            alert("Enter source and destination");
-            return;
-        }
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/route?start=${startStr}&end=${endStr}`
+      );
+      setRoutes(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-        try {
+  const resetPoints = () => {
+    setStart(null);
+    setEnd(null);
+    setRoutes([]);
+  };
 
-            const response = await axios.get(
-                `http://localhost:4000/route?start=${start}&end=${end}`
+  const routeStyles = [
+    { color: "#22c55e", dashArray: null },      // green solid
+    { color: "#3b82f6", dashArray: "10 10" },   // blue dashed
+    { color: "#ef4444", dashArray: "3 8" },     // red dotted
+  ];
+
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl font-semibold mb-3 text-gray-800">
+        Jogging Route Selector
+      </h2>
+
+      {/* Instructions */}
+      <div className="mb-3 text-sm text-gray-600">
+        👉 Click once to set <span className="font-semibold text-green-600">Start</span>,
+        click again to set <span className="font-semibold text-red-600">End</span>
+      </div>
+
+      {/* Controls */}
+      <div className="flex gap-3 mb-4">
+        <button
+          onClick={getRoute}
+          className="px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+        >
+          Find Routes
+        </button>
+
+        <button
+          onClick={resetPoints}
+          className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+        >
+          Reset
+        </button>
+      </div>
+
+      {/* Map */}
+      <div className="rounded-xl overflow-hidden shadow-xl">
+        <MapContainer
+          center={[26.8467, 80.9462]}
+          zoom={13}
+          className="h-[500px] w-full"
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+          <MapClickHandler setStart={setStart} setEnd={setEnd} />
+          <FitBounds routes={routes} />
+
+          {start && (
+            <Marker position={start}>
+              <Popup>Start Point</Popup>
+            </Marker>
+          )}
+
+          {end && (
+            <Marker position={end}>
+              <Popup>End Point</Popup>
+            </Marker>
+          )}
+
+          {routes.map((route, index) => {
+            const positions = route.geometry.coordinates.map(
+              coord => [coord[1], coord[0]]
             );
 
-            console.log("Frontend received routes:", response.data);
+            const style = routeStyles[index % routeStyles.length];
 
-            setRoutes(response.data);
-
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const colors = ["green", "blue", "red"];
-
-    const startCoords = start ? start.split(",").map(Number) : null;
-    const endCoords = end ? end.split(",").map(Number) : null;
-
-    return (
-        <div>
-
-            <h3>Enter coordinates:</h3>
-
-            <input
-                placeholder="Start (longitude,latitude)"
-                value={start}
-                onChange={(e) => setStart(e.target.value)}
-            />
-
-            <input
-                placeholder="End (longitude,latitude)"
-                value={end}
-                onChange={(e) => setEnd(e.target.value)}
-            />
-
-            <button onClick={getRoute}>
-                Find Jogging Routes
-            </button>
-
-            <MapContainer
-                center={[26.8467, 80.9462]}
-                zoom={13}
-                style={{ height: "500px", width: "600px", marginTop: "20px" }}
-            >
-
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-
-                <FitBounds routes={routes} />
-
-                {/* Start marker */}
-                {startCoords && (
-                    <Marker position={[startCoords[1], startCoords[0]]}>
-                        <Popup>Start</Popup>
-                    </Marker>
-                )}
-
-                {/* End marker */}
-                {endCoords && (
-                    <Marker position={[endCoords[1], endCoords[0]]}>
-                        <Popup>End</Popup>
-                    </Marker>
-                )}
-
-                {/* Routes */}
-                {routes.map((route, index) => {
-
-                    const positions = route.geometry.coordinates.map(
-                        coord => [coord[1], coord[0]]
-                    );
-
-                    return (
-                        <Polyline
-                            key={index}
-                            positions={positions}
-                            color={colors[index]}
-                            weight={6}
-                            opacity={0.8}
-                        />
-                    );
-                })}
-
-            </MapContainer>
-
-            <h3>Route Scores:</h3>
-
-            {routes.map((route, index) => (
-
-                <div key={index}>
-                    Route {index + 1} |
-                    Distance: {(route.distance / 1000).toFixed(2)} km |
-                    Time: {(route.duration / 60).toFixed(1)} min |
-                    Health Score: {route.healthScore?.toFixed(2) ?? "N/A"}
-                </div>
-
-            ))}
-
-        </div>
-    );
+            return (
+              <Polyline
+                key={index}
+                positions={positions}
+                color={style.color}
+                dashArray={style.dashArray}
+                weight={7}
+                opacity={0.9}
+              >
+                <Popup>Route {index + 1}</Popup>
+              </Polyline>
+            );
+          })}
+        </MapContainer>
+      </div>
+    </div>
+  );
 }
 
 export default MapComponent;

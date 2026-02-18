@@ -1,16 +1,25 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+
 import "./App.css";
 import MapComponent from "./components/MapComponent";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import LandingPage from "./Pages/Landing";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import AuthPage from "./Pages/Login";
+
 
 function App() {
-	const [count, setCount] = useState(0);
-
 	return (
 		<>
-			<h1>Cleanest Route Finder</h1>
-			<MapComponent />
+			<BrowserRouter>
+				<Navbar />
+				<Routes>
+					<Route path="/" element={<LandingPage />} />
+					<Route path="/map" element={<MapComponent/>}/>
+					<Route path="/login" element={<AuthPage/>}/>
+				</Routes>
+			</BrowserRouter>
 		</>
 	);
 }
