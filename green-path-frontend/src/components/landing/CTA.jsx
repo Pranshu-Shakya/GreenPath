@@ -8,7 +8,7 @@ function CTA() {
         className="
           max-w-4xl mx-auto
           p-10 rounded-3xl
-          bg-gradient-to-r
+          bg-linear-to-r
           from-[#756AB6]
           via-[#9B86BD]
           to-[#756AB6]

@@ -139,7 +139,7 @@ function MapComponent() {
         <MapContainer
           center={[26.8467, 80.9462]}
           zoom={13}
-          className="h-[500px] w-full"
+          className="h-125 w-full"
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 

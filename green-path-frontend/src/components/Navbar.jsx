@@ -19,7 +19,7 @@ function Navbar() {
           flex items-center gap-2 px-3 py-2
           rounded-full
           backdrop-blur-xl
-          bg-gradient-to-r
+          bg-linear-to-r
           from-[#756AB6]/80
           via-[#9B86BD]/80
           to-[#756AB6]/80

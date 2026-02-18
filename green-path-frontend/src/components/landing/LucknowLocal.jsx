@@ -46,7 +46,7 @@ function ExploreDataSection() {
         bg-[#756AB6]
       ">
         <h2 className="text-3xl font-semibold text-[#FFEFEF] leading-snug">
-          Search for local <br /> data
+        A map that cares 
         </h2>
 
         <p className="mt-4 text-sm text-[#E2BBE9] leading-relaxed">

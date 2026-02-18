@@ -12,7 +12,7 @@ function Stats() {
           <div
             key={i}
             className="rounded-2xl p-6
-              bg-gradient-to-br
+              bg-linear-to-br
               from-[#756AB6]/80
               to-[#9B86BD]/80
               text-[#FFEFEF]

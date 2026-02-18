@@ -8,14 +8,14 @@ import ExploreDataSection from '../components/landing/LucknowLocal';
 import Footer from '../components/Footer';
 function LandingPage() {
     return (
-        <div className='bg-[#f7f2f2] min-h-screen'>
+        <div className='bg-[#f7f2f2] min-h-screen space-y-4'>
           <Hero/>
           <Features/>
           <Stats/>
           <CTA/>
           <FooterCTA/>
           <ExploreDataSection />
-          <Footer />
+          <Footer/>
         </div>
     );
 }

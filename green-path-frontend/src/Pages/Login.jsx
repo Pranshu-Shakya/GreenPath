@@ -18,17 +18,17 @@ function AuthPage() {
 
     if (mode === "login") {
       console.log("LOGIN DATA:", form.email, form.password);
-      // 🔗 call login API
+      // call login API
     } else {
       console.log("SIGNUP DATA:", form);
-      // 🔗 call signup API
+      // call signup API
     }
   };
 
   return (
     <div className="
       min-h-screen flex items-center justify-center
-      bg-gradient-to-b
+      bg-linear-to-b
       from-[#FFEFEF]
       via-[#E2BBE9]/40
       to-[#FFEFEF]
