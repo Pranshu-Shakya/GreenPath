@@ -1,10 +1,10 @@
 import { useState } from "react";
 import "./App.css";
-import MapComponent from "./components/MapComponent";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "./Pages/Landing";
 import Navbar from "./components/Navbar";
 import AuthPage from "./Pages/Login";
+import AiroMap from "./Pages/AiroMap";
 import About from "./Pages/About";
 import Docs from "./Pages/Docs";
 import ApiTester from "./Pages/ApiTester";
@@ -34,6 +34,8 @@ function App() {
 				<Navbar />
 				<Routes>
 					<Route path="/" element={<LandingPage />} />
+					<Route path="/map" element={<AiroMap/>}/>
+					<Route path="/login" element={<AuthPage/>}/>
 					<Route path="/map" element={<MapComponent />} />
 					<Route path="/login" element={<AuthPage />} />
 					<Route path="/about" element={<About />} />
