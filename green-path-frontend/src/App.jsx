@@ -36,7 +36,6 @@ function App() {
 					<Route path="/" element={<LandingPage />} />
 					<Route path="/map" element={<AiroMap/>}/>
 					<Route path="/login" element={<AuthPage/>}/>
-					<Route path="/map" element={<MapComponent />} />
 					<Route path="/login" element={<AuthPage />} />
 					<Route path="/about" element={<About />} />
 					<Route path="/docs" element={<Docs />} />
