@@ -6,7 +6,17 @@
 
 .app-secondary-bg{
     background-color: #FFEFEF;
+    
 }
 button {
     cursor: pointer;
+}
+
+.icon-color{
+    color:#756AB6;
+}
+
+.icon-bg{
+    background-color:#E2BBE9;
+    opacity: 0.4;
 }

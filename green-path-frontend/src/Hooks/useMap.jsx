@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { getRoutesService } from "../Services/MapSevices";
+import { getRoutesService, reportIncidentService } from "../Services/MapSevices";
 
 export function useAiroMap(){
     const [loading,setLoading]=useState(false);
@@ -18,8 +18,22 @@ export function useAiroMap(){
         }
     }
 
+    const reportIncident=async(data)=>{
+        setLoading(true);
+        setError(true);
+        try{
+            const res=await reportIncidentService(data);
+            console.log(res.data);
+            return res.data;
+        } catch (err){
+             setError(err.response?.data?.message || "Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    }
     return {
         getRoutes,
+        reportIncident,
         loading,
         error,
     }
