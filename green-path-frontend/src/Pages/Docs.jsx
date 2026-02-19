@@ -12,8 +12,6 @@ const CodeBlock = ({ children }) => {
 		setCopied(true);
 		setTimeout(() => setCopied(false), 3000);
 	};
-    const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
-
 	return (
 		<div className="relative">
 			<button
@@ -101,6 +99,7 @@ const Endpoint = ({ method, path, auth, description, request, response, example 
 
 function Docs() {
 	const navigate = useNavigate();
+    const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 	return (
 		<>
 			<div className="min-h-screen bg-linear-to-b from-[#FFEFEF] via-[#756AB6]/40 to-[#FFEFEF] px-6 pt-28 pb-8">
