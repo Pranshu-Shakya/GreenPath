@@ -12,7 +12,7 @@ function AuthPage() {
 		password: "",
 	});
     const navigate = useNavigate();
-    const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+    const baseurl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 
 	const handleChange = (e) => {
 		setForm({ ...form, [e.target.name]: e.target.value });
@@ -24,8 +24,8 @@ function AuthPage() {
 		try {
 			const url =
 				mode === "login"
-					? `${url}/auth/signin`
-					: `${url}/auth/signup`;
+					? `${baseurl}/auth/signin`
+					: `${baseurl}/auth/signup`;
 
 			const body =
 				mode === "login"
