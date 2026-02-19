@@ -1,5 +1,5 @@
 import React from "react";
-import Hero from "../components/landing/hero";
+import Hero from "../components/landing/Hero";
 import Features from "../components/landing/Features";
 import Stats from "../components/landing/Stats";
 import ExploreDataSection from "../components/landing/LucknowLocal";
