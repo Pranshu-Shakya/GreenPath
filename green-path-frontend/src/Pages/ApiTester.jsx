@@ -3,7 +3,7 @@ import Footer from "../components/Footer";
 
 import { Play, Copy, Check, Server, Shield, Timer, Hash } from "lucide-react";
 
-const BASE_URL = "http://localhost:4000";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 
 function ApiTester() {
 	const [method, setMethod] = useState("GET");

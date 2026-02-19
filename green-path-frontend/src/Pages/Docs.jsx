@@ -12,6 +12,7 @@ const CodeBlock = ({ children }) => {
 		setCopied(true);
 		setTimeout(() => setCopied(false), 3000);
 	};
+    const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 
 	return (
 		<div className="relative">
@@ -116,7 +117,7 @@ function Docs() {
 					</div>
 					{/* Base URL */}
 					<Section icon={Database} title="Base URL">
-						<CodeBlock>http://localhost:4000</CodeBlock>
+						<CodeBlock>{url}</CodeBlock>
 
 						<div>
 							• CORS enabled
@@ -158,7 +159,7 @@ function Docs() {
 							response={`{
 "token": "<jwt_token>"
 }`}
-							example={`curl -X POST http://localhost:4000/auth/signup
+							example={`curl -X POST ${url}/auth/signup
 -H "Content-Type: application/json"
 -d '{"name":"Alice","email":"alice@example.com","password":"password"}'`}
 						/>
@@ -175,7 +176,7 @@ function Docs() {
 							response={`{
 "token": "<jwt_token>"
 }`}
-							example={`curl -X POST http://localhost:4000/auth/signin
+							example={`curl -X POST ${url}/auth/signin
 -H "Content-Type: application/json"
 -d '{"email":"alice@example.com","password":"password"}'`}
 						/>
@@ -198,7 +199,7 @@ function Docs() {
 "type": "TRAFFIC",
 "confidence": 0.3
 }`}
-							example={`curl -X POST http://localhost:4000/incident/report
+							example={`curl -X POST ${url}/incident/report
 -H "Authorization: Bearer <token>"
 -H "Content-Type: application/json"
 -d '{"type":"TRAFFIC","lat":28.6139,"lon":77.2090}'`}
@@ -221,7 +222,7 @@ end=lon,lat`}
 "healthScore": 42
 }
 ]`}
-							example={`curl "http://localhost:4000/route?start=77.2090,28.6139&end=77.2300,28.6200"`}
+							example={`curl "${url}/route?start=77.2090,28.6139&end=77.2300,28.6200"`}
 						/>
 					</Section>
 					{/* Notes */}

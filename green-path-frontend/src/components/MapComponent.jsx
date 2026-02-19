@@ -124,6 +124,8 @@ function MapComponent() {
 	const [age, setAge] = useState("");
 	const [mode, setMode] = useState("jogging");
 
+    const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+
 	const { getRoutes, loading, error } = useAiroMap();
 
 	const handleFindRoutes = async () => {
@@ -154,13 +156,13 @@ function MapComponent() {
 	useEffect(() => {
 		async function fetchMapData() {
 			try {
-				const zonesRes = await fetch("http://localhost:4000/zones");
+				const zonesRes = await fetch(`${url}/zones`);
 
 				const zonesData = await zonesRes.json();
 
 				setZones(zonesData.zones || []);
 
-				const incidentsRes = await fetch("http://localhost:4000/incident/map");
+				const incidentsRes = await fetch(`${url}/incident/map`);
 
 				const incidentsData = await incidentsRes.json();
 
