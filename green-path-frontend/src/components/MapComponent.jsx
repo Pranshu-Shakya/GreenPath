@@ -87,6 +87,7 @@ function MapComponent() {
       const response = await axios.get(
         `http://localhost:4000/route?start=${startStr}&end=${endStr}`
       );
+      console.log(response.data)
       setRoutes(response.data);
     } catch (err) {
       console.error(err);
@@ -113,7 +114,7 @@ function MapComponent() {
 
       {/* Instructions */}
       <div className="mb-3 text-sm text-gray-600">
-        👉 Click once to set <span className="font-semibold text-green-600">Start</span>,
+         Click once to set <span className="font-semibold text-green-600">Start</span>,
         click again to set <span className="font-semibold text-red-600">End</span>
       </div>
 
