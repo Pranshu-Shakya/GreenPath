@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+.app-bg{
+    background-color: #756AB6;
+}
+
+.app-secondary-bg{
+    background-color: #FFEFEF;
+}

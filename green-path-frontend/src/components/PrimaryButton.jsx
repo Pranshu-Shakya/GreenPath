@@ -11,18 +11,17 @@ function PrimaryButton({
       onClick={onClick}
       disabled={disabled}
       className={`
-        px-3 py-1
+        inline-flex items-center gap-2
+        px-8 py-3
         rounded-full
         font-medium
-        text-sm
+        text-sm sm:text-base
         transition-all duration-300
-        bg-[#9087c7]
-        hover:bg-[#756AB6]
-        text-[#FFEFEF]
-        shadow-lg
-        hover:shadow-xl
+        bg-[#FFEFEF]
+        text-[#756AB6]
+        border border-[#E2BBE9]
+        hover:bg-[#E2BBE9]
         disabled:opacity-50
-        hover:cursor-pointer
         disabled:cursor-not-allowed
         ${className}
       `}
