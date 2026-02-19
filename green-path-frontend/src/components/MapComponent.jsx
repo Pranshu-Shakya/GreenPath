@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -7,10 +6,11 @@ import {
   Marker,
   Popup,
   useMap,
-  useMapEvents
+  useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useAiroMap } from "../Hooks/useMap";
 
 /* ===========================
    Fix Leaflet Marker Icons
@@ -26,20 +26,17 @@ L.Icon.Default.mergeOptions({
 });
 
 /* ===========================
-   Fit Bounds to Routes
+   Fit map to routes
 =========================== */
 function FitBounds({ routes }) {
   const map = useMap();
 
-  useEffect(() => {
-    if (!routes.length) return;
+  React.useEffect(() => {
+    if (!routes || routes.length === 0) return;
 
-    const bounds = [];
-    routes.forEach(route => {
-      route.geometry.coordinates.forEach(coord => {
-        bounds.push([coord[1], coord[0]]);
-      });
-    });
+    const bounds = routes.flatMap((route) =>
+      route.geometry.coordinates.map((coord) => [coord[1], coord[0]])
+    );
 
     map.fitBounds(bounds, { padding: [50, 50] });
   }, [routes, map]);
@@ -48,19 +45,19 @@ function FitBounds({ routes }) {
 }
 
 /* ===========================
-   Handle Map Clicks
+   Handle map clicks
 =========================== */
 function MapClickHandler({ setStart, setEnd }) {
   useMapEvents({
     click(e) {
       const { lat, lng } = e.latlng;
 
-      setStart(prev => {
+      setStart((prev) => {
         if (!prev) return [lat, lng];
         setEnd([lat, lng]);
         return prev;
       });
-    }
+    },
   });
 
   return null;
@@ -74,36 +71,35 @@ function MapComponent() {
   const [start, setStart] = useState(null);
   const [end, setEnd] = useState(null);
 
-  const getRoute = async () => {
+  const { getRoutes, loading, error } = useAiroMap();
+
+  const handleFindRoutes = async () => {
     if (!start || !end) {
-      alert("Select start and end points on the map");
+      alert("Please select start and end points on the map");
       return;
     }
 
-    const startStr = `${start[1]},${start[0]}`;
-    const endStr = `${end[1]},${end[0]}`;
+    const data = {
+      startStr: `${start[1]},${start[0]}`,
+      endStr: `${end[1]},${end[0]}`,
+    };
 
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/route?start=${startStr}&end=${endStr}`
-      );
-      console.log(response.data)
-      setRoutes(response.data);
-    } catch (err) {
-      console.error(err);
+    const result = await getRoutes(data);
+    if (Array.isArray(result)) {
+      setRoutes(result);
     }
   };
 
-  const resetPoints = () => {
+  const handleReset = () => {
     setStart(null);
     setEnd(null);
     setRoutes([]);
   };
 
   const routeStyles = [
-    { color: "#22c55e", dashArray: null },      // green solid
-    { color: "#3b82f6", dashArray: "10 10" },   // blue dashed
-    { color: "#ef4444", dashArray: "3 8" },     // red dotted
+    { color: "#22c55e", dashArray: null },     // best
+    { color: "#3b82f6", dashArray: "10 10" },  // alternative
+    { color: "#ef4444", dashArray: "3 8" },    // avoid
   ];
 
   return (
@@ -112,35 +108,41 @@ function MapComponent() {
         Jogging Route Selector
       </h2>
 
-      {/* Instructions */}
-      <div className="mb-3 text-sm text-gray-600">
-         Click once to set <span className="font-semibold text-green-600">Start</span>,
+      <p className="mb-3 text-sm text-gray-600">
+        Click once to set <span className="font-semibold text-green-600">Start</span>,
         click again to set <span className="font-semibold text-red-600">End</span>
-      </div>
+      </p>
 
       {/* Controls */}
       <div className="flex gap-3 mb-4">
         <button
-          onClick={getRoute}
-          className="px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+          onClick={handleFindRoutes}
+          disabled={loading}
+          className="px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition disabled:opacity-60"
         >
-          Find Routes
+          {loading ? "Finding routes..." : "Find Routes"}
         </button>
 
         <button
-          onClick={resetPoints}
+          onClick={handleReset}
           className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
         >
           Reset
         </button>
       </div>
 
+      {error && (
+        <div className="mb-3 text-sm text-red-600">
+          {error}
+        </div>
+      )}
+
       {/* Map */}
       <div className="rounded-xl overflow-hidden shadow-xl">
         <MapContainer
-          center={[26.8467, 80.9462]}
+          center={[26.8467, 80.9462]} // Lucknow
           zoom={13}
-          className="h-125 w-full"
+          className="h-[400px] md:h-[500px] lg:h-[600px] w-full"
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
@@ -160,9 +162,10 @@ function MapComponent() {
           )}
 
           {routes.map((route, index) => {
-            const positions = route.geometry.coordinates.map(
-              coord => [coord[1], coord[0]]
-            );
+            const positions = route.geometry.coordinates.map((coord) => [
+              coord[1],
+              coord[0],
+            ]);
 
             const style = routeStyles[index % routeStyles.length];
 
@@ -172,7 +175,7 @@ function MapComponent() {
                 positions={positions}
                 color={style.color}
                 dashArray={style.dashArray}
-                weight={7}
+                weight={6}
                 opacity={0.9}
               >
                 <Popup>Route {index + 1}</Popup>
