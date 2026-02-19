@@ -212,8 +212,6 @@ function IncidentReport() {
               {coords.lng.toFixed(4)})
             </p>
           )}
-
-          
         </div>
       )}
     </div>
