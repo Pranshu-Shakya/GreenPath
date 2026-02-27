@@ -189,16 +189,16 @@ function MapComponent() {
 	const duration = speed ? formatDuration(distanceKm / speed) : "--";
 
 	return (
-		<div className="p-2">
+		<div className="p-0 sm:p-2">
 			{/* Instructions */}
 			<div className="mb-3 text-sm text-gray-600">
 				Click once to set <span className="font-semibold text-green-600">Start</span>,
 				click again to set <span className="font-semibold text-red-600">End</span>
 			</div>
 
-			<div className="grid grid-cols-12 gap-6">
+			<div className="grid grid-rows-9 sm:grid-rows-2 lg:grid-cols-12 gap-6">
 				{/* ================= LEFT : MAP ================= */}
-				<div className="col-span-12 lg:col-span-7">
+				<div className="row-span-3 sm:row-span-1 lg:col-span-7">
 					<div className="rounded-2xl h-full shadow-xl border border-[#E2BBE9]">
 						<MapContainer
 							center={[26.8467, 80.9462]}
@@ -285,7 +285,7 @@ function MapComponent() {
 				</div>
 
 				{/* ================= RIGHT : CONTROLS ================= */}
-				<div className="col-span-12  lg:col-span-5 flex flex-col gap-5">
+				<div className="row-span-6 sm:row-span-1  lg:col-span-5 flex flex-col gap-5">
 					{/* USER SETUP CARD */}
 					<div className="bg-[#F4ECF7] border border-[#E2BBE9] rounded-2xl p-5 shadow-md">
 						<h3 className="flex items-center gap-2 text-[#756AB6] font-semibold mb-4">

@@ -10,7 +10,7 @@ function Navbar() {
 	const navigate = useNavigate();
 
 	const navItem = (path, label) =>
-		`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
+		`px-3 min-[375px]:px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
      ${
 			pathname === path
 				? "bg-[#FFEFEF] text-[#756AB6] shadow-md"
@@ -53,7 +53,7 @@ function Navbar() {
 		<div className="fixed top-5 left-1/2 -translate-x-1/2 z-50">
 			<nav
 				className="
-          flex items-center gap-2 px-3 py-2
+          flex items-center gap-0 sm:gap-2 px-0 sm:px-3 py-1 sm:py-2
           rounded-full
           backdrop-blur-xl
           bg-linear-to-r
